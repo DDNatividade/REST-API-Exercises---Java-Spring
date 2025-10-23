@@ -29,9 +29,10 @@ public class PostsEntity {
     @JoinColumn(name="user_posts")
     private UsersEntity author_post;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "comment_in_post")
-    List<CommentEntity> posts_comment;
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy="comment_in_post")
+    List<CommentEntity> posts_in_comment;
 
 
 }

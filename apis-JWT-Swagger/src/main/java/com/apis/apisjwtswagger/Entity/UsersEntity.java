@@ -18,15 +18,20 @@ public class UsersEntity {
     @NotEmpty
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private RoleEnum role;
+    @ManyToOne
+    @JoinColumn(name = "user_role")
+    private RoleEntity role;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name="author_post")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "author_post"
+    )
     private List<PostsEntity> user_posts;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name="author")
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "author"
+    )
     private List<CommentEntity> user_comments;
 
 

@@ -1,7 +1,10 @@
 package com.apis.apisjwtswagger.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -15,11 +18,16 @@ public class CommentEntity {
     @Max(120)
     private String content;
 
-    @ManyToOne
+    @NotNull
+    private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_comments")
     private UsersEntity author;
 
-    @ManyToOne
-    @JoinColumn(name = "posts_comment")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "og_post"
+    )
     private PostsEntity comment_in_post;
 }
