@@ -1,6 +1,7 @@
 package com.apis.apisjwtswagger.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.util.List;
 
@@ -13,9 +14,11 @@ public class UsersEntity {
     private Long id;
 
     @NotEmpty
+    @NotNull
     private String email;
 
     @NotEmpty
+    @NotNull
     private String password;
 
     @ManyToOne

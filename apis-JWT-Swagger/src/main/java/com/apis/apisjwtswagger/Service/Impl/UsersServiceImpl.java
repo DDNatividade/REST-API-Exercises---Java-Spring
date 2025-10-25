@@ -1,8 +1,11 @@
 package com.apis.apisjwtswagger.Service.Impl;
 
+import com.apis.apisjwtswagger.DTO.Users.UserCreateDTO;
+import com.apis.apisjwtswagger.Entity.RoleEntity;
 import com.apis.apisjwtswagger.Entity.RoleEnum;
 import com.apis.apisjwtswagger.Entity.UsersEntity;
 import com.apis.apisjwtswagger.Exceptions.UserNotFoundException;
+import com.apis.apisjwtswagger.Repository.RoleRepository;
 import com.apis.apisjwtswagger.Repository.UsersRepository;
 import com.apis.apisjwtswagger.Service.UserService;
 import jakarta.transaction.Transactional;
@@ -17,6 +20,10 @@ public class UsersServiceImpl implements UserService {
 
     @Autowired
     UsersRepository repository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
 
     @Override
     public Page<UsersEntity> showAllUsers(Pageable pageable) {
@@ -46,5 +53,24 @@ public class UsersServiceImpl implements UserService {
     public void deleteUser(UsersEntity user) {
         repository.delete(user);
 
+    }
+
+    @Override
+    public UsersEntity searchById(Long id) {
+        return repository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("There are not users with this id"));
+    }
+
+    @Override
+    public void updateUser( UserCreateDTO userDTO,Long id) {
+        UsersEntity userEntity = repository.findById(id).orElseThrow(()
+                -> new UserNotFoundException("There are not users with this id"));
+        RoleEntity roleEntity = roleRepository.findByIdRole(userDTO.getUser_role())
+                .orElseThrow(() -> new UserNotFoundException("The given role does not exist"));
+        userEntity.setRole(roleEntity);
+        userEntity.setEmail(userDTO.getEmail());
+        userEntity.setPassword(userDTO.getPassword());
+
+        repository.save(userEntity);
     }
 }

@@ -1,6 +1,7 @@
 package com.apis.apisjwtswagger.Service;
 
 
+import com.apis.apisjwtswagger.DTO.Users.UserCreateDTO;
 import com.apis.apisjwtswagger.Entity.RoleEnum;
 import com.apis.apisjwtswagger.Entity.UsersEntity;
 import org.springframework.data.domain.Page;
@@ -13,5 +14,7 @@ public interface UserService {
     UsersEntity  findByEmail(String email);
     void addUser(UsersEntity user);
     void deleteUser(UsersEntity user);
+    UsersEntity searchById(Long id);
+    void updateUser(UserCreateDTO userDTO,Long id);
 
 }
