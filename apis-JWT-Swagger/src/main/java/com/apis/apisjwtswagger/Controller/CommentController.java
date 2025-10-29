@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @RestController
 @RequestMapping("apis/comments")
@@ -113,11 +114,12 @@ public class CommentController {
             @PathVariable @Valid Long id,
             @RequestParam String date,
             Pageable pageable){
-        LocalDateTime localDate = LocalDateTime.parse(date);
+        LocalDate localDate = LocalDate.parse(date);
+        LocalDateTime localDateTime = localDate.atTime(LocalTime.MIN);
 
         UsersEntity user= userService.searchById(id);
 
-        Page<CommentEntity> commentEntities=commentService.findByCreatedAtBetween(localDate,user,pageable);
+        Page<CommentEntity> commentEntities=commentService.findByCreatedAtBetween(localDateTime,localDateTime.plusDays(1),user,pageable);
         Page<ShowCommentDTO> commentDTOS = commentEntities.map(mapper::toShowCommentsDTO);
 
         PagedResponse<ShowCommentDTO> commentDTOS2 = new PagedResponse<>(
@@ -130,6 +132,18 @@ public class CommentController {
 
         return ResponseEntity.status(HttpStatus.FOUND).body(commentDTOS2);
     }
+
+    @PutMapping("/posts/{id}")
+    public ResponseEntity<CommentEntity> updateComment(@PathVariable @Valid Long id, @RequestBody CreateCommentDTO commentDTO){
+        CommentEntity ogComment = commentService.findById(id);
+        ogComment.setContent(commentDTO.getContent());
+        ogComment.setCreatedAt(LocalDateTime.now());
+        commentService.addComment(ogComment);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+
+    }
+
+
 
 
 

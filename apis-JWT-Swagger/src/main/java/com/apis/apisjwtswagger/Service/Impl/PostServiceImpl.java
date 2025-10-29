@@ -33,6 +33,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void addPost(PostsEntity post) {
          postsRepository.save(post);
     }
@@ -43,9 +44,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deletePost(Long id) {
+        postsRepository.delete(postsRepository.findById(id).get());
+    }
+
+    @Override
     public PostsEntity findByAuthorAndTitle(UsersEntity author, String title) {
         return postsRepository
                 .findByPostAndAuthor(author, title)
                 .orElseThrow(() -> new NoPostsFoundException("No posts found."));
+    }
+
+    @Override
+    public PostsEntity findById(Long id) {
+        return postsRepository.findById(id).orElseThrow(
+                () -> new NoPostsFoundException("No posts found.")
+        );
     }
 }

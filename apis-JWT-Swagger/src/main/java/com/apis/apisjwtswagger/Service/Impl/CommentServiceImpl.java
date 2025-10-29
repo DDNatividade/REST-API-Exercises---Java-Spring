@@ -1,6 +1,7 @@
 package com.apis.apisjwtswagger.Service.Impl;
 
 import com.apis.apisjwtswagger.Entity.CommentEntity;
+import com.apis.apisjwtswagger.Entity.PostsEntity;
 import com.apis.apisjwtswagger.Entity.UsersEntity;
 import com.apis.apisjwtswagger.Exceptions.NoCommentFoundException;
 import com.apis.apisjwtswagger.Repository.CommentRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -43,8 +45,28 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Page<CommentEntity> findByCreatedAtBetween(LocalDateTime createdAt,UsersEntity author, Pageable pageable) {
-        return repository.findByCreatedAtBetween(createdAt,author,pageable)
+    public CommentEntity findById(Long id) {
+        return repository.searchById(id).orElseThrow(()  ->
+                new NoCommentFoundException("No comments have been made" +
+                        "with this id yet"));
+    }
+
+
+    @Override
+    public Page<CommentEntity> findByCreatedAtBetween(LocalDateTime startOfTheDay,
+                                                      LocalDateTime endOfTheDay,
+                                                      UsersEntity author,
+                                                      Pageable pageable) {
+        return repository.findByCreatedAtBetween(startOfTheDay,endOfTheDay,author,pageable)
                 .orElseThrow(() -> new NoCommentFoundException("No comments have been found." ));
     }
+
+    @Override
+    public Page<CommentEntity> findByPostAndAuthor(PostsEntity posts, UsersEntity author, Pageable pageable) {
+        return repository.findByPostAndAuthor(posts,author,pageable).orElseThrow(() -> new NoCommentFoundException("No comments have been found."));
+    }
+
+
+
+
 }

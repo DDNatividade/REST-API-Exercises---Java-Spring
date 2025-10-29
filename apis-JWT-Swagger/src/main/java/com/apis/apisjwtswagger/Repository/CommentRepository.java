@@ -11,22 +11,31 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
-
     @Query(value = "SELECT c FROM CommentEntity c ")
     Optional<Page<CommentEntity>> showAll(Pageable pageable);
 
     @Query(value = "SELECT c FROM CommentEntity c WHERE c.comment_in_post=?1")
-    Optional<Page<CommentEntity>>  findByPost(PostsEntity post, Pageable pageable);
+    Optional<Page<CommentEntity>> findByPost(PostsEntity post, Pageable pageable);
 
     @Query(value = "SELECT c FROM CommentEntity c WHERE c.author=?1")
-    Optional<Page<CommentEntity>>  findByAuthor(UsersEntity author, Pageable pageable);
+    Optional<Page<CommentEntity>> findByAuthor(UsersEntity author, Pageable pageable);
 
-    @Query(value ="SELECT c from CommentEntity c " +
-            "WHERE c.createdAt=?1 AND c.author=?2" )
-    Optional<Page<CommentEntity>>  findByCreatedAtBetween(LocalDateTime createdAt, UsersEntity author, Pageable pageable);
+    // Corregido: ahora usa BETWEEN con dos parámetros
+    @Query(value = "SELECT c FROM CommentEntity c WHERE c.author = ?3 AND c.createdAt >= ?1 AND c.createdAt < ?2")
+    Optional<Page<CommentEntity>> findByCreatedAtBetween(
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            UsersEntity author,
+            Pageable pageable);
 
+    @Query(value = "SELECT c from CommentEntity c WHERE c.comment_in_post=?1 AND c.author=?2")
+   Optional<Page<CommentEntity>> findByPostAndAuthor(PostsEntity posts, UsersEntity author, Pageable pageable);
+
+    @Query(value = "SELECT c FROM CommentEntity c WHERE c.id=?1")
+    Optional<CommentEntity> searchById(Long id);
 
 }

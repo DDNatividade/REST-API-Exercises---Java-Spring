@@ -14,5 +14,7 @@ public interface PostService {
     public Page<PostsEntity> showAll(Pageable pageable);
     public void addPost(PostsEntity post);
     public void deletePost(PostsEntity post);
+    public void deletePost(Long id);
     public PostsEntity findByAuthorAndTitle(UsersEntity author, String title);
+    public PostsEntity findById(Long id);
 }

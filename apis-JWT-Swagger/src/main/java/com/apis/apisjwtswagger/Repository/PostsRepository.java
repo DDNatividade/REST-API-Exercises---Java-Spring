@@ -30,4 +30,6 @@ public interface PostsRepository extends JpaRepository<PostsEntity,Long> {
     @Query(value = "SELECT p FROM PostsEntity p")
     Optional<Page<PostsEntity>> showAll(Pageable pageable);
 
+    @Query(value = "SELECT p FROM PostsEntity p WHERE p.id=?1")
+    Optional<PostsEntity> findById(Long id);
 }

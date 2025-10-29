@@ -4,6 +4,7 @@ import com.apis.apisjwtswagger.DTO.ErrorManagerClass;
 import com.apis.apisjwtswagger.Exceptions.NoCommentFoundException;
 import com.apis.apisjwtswagger.Exceptions.NoPostsFoundException;
 import com.apis.apisjwtswagger.Exceptions.UserNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorManagerClass> handleUserNotFoundException(UserNotFoundException ex) {
         ErrorManagerClass errorManagerClass = new ErrorManagerClass(
@@ -70,6 +72,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
+
 
 
 

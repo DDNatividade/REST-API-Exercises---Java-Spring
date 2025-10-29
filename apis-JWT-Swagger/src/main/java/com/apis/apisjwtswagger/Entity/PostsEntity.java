@@ -1,6 +1,7 @@
 package com.apis.apisjwtswagger.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -15,16 +16,17 @@ public class PostsEntity {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotBlank
     private String title;
 
+    @NotBlank
     @Column(columnDefinition = "TEXT")
-    @Max(12000)
     private String content;
 
     @NotNull
     private LocalDateTime createdDate;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name="user_posts")
     private UsersEntity author_post;
