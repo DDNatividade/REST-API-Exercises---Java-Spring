@@ -6,9 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -47,7 +49,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // CARGAR los detalles del usuario desde la BD
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails = this.userDetailsService
+                    .loadUserByUsername(userEmail);
+
+
+
+        // 7. VALIDAR que el token es válido (no expirado, firma correcta, username coincide)
+        if (jwtService.isTokenValid(jwt, userDetails)) {
+
+            // 8. CREAR el objeto de autenticación
+            // Este es el objeto que Spring Security usa para saber "quién eres"
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                    userDetails,           // Principal (el usuario)
+                    null,                  // Credentials (no las necesitamos ya)
+                    userDetails.getAuthorities());// Roles/permisos
+
+                    // 9. AÑADIR detalles de la petición (IP, etc)
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+
+            // 10. GUARDAR la autenticación en el contexto de Spring Security
+            // A partir de aquí, Spring sabe que estás autenticado
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+        }
+
+        // 11. CONTINUAR con la cadena de filtros
+        // Si todo fue bien, la petición llegará al controller
+        filterChain.doFilter(request, response);
     }
 }

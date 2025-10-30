@@ -3,6 +3,7 @@ package com.apis.apisjwtswagger.Security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,9 +34,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // Rutas PÚBLICAS - cualquiera puede acceder sin token
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/apis/auth/**").permitAll()
 
                         // Rutas PROTEGIDAS - necesitas token válido
+                        .requestMatchers(HttpMethod.GET,"/apis/users/").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/apis/users/").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
 

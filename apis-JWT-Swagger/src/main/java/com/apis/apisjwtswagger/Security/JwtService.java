@@ -5,10 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,11 +16,11 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret.key}")
+    @Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
-    private long jwtExpiration;
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
+
 
 
     public String generateToken(UserDetails userDetails) {
@@ -33,9 +32,10 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)              // Claims custom (roles, etc)
-                .setSubject(userDetails) // Username del usuario
+                .setSubject(userDetails.getUsername()) /*Username del usuario.
+                 En este caso es el correo electrónico*/
                 .setIssuedAt(new Date(System.currentTimeMillis())) // Fecha creación
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration)) // Expiración
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // Expiración
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256) // Firma con tu clave
                 .compact();
     }
@@ -65,12 +65,13 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey()) // Usa tu clave para validar firma
+                .parser()
+                .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
+
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);

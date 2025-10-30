@@ -1,8 +1,6 @@
 package com.apis.apisjwtswagger.Controller;
 
 import com.apis.apisjwtswagger.DTO.PagedResponse;
-import com.apis.apisjwtswagger.DTO.Posts.PostContentUpdateDTO;
-import com.apis.apisjwtswagger.DTO.Posts.PostTitleUpdateDTO;
 import com.apis.apisjwtswagger.DTO.Posts.PostsCreateDTO;
 import com.apis.apisjwtswagger.DTO.Posts.PostsReadDTO;
 import com.apis.apisjwtswagger.Entity.PostsEntity;
@@ -16,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
