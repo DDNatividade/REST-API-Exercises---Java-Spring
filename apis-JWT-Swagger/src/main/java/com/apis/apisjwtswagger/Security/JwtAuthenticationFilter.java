@@ -22,6 +22,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        // Excluir rutas de autenticación y Swagger/Documentación
+        String path = request.getRequestURI();
+
+        // **IMPORTANTE**: Las rutas deben coincidir EXACTAMENTE con las de tu SecurityConfig
+        return path.startsWith("/apis/auth/") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-ui");
+    }
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,

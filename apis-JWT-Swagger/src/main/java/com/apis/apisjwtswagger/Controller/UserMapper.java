@@ -2,6 +2,7 @@ package com.apis.apisjwtswagger.Controller;
 
 import com.apis.apisjwtswagger.DTO.Users.UserCreateDTO;
 import com.apis.apisjwtswagger.DTO.Users.UserListDTO;
+import com.apis.apisjwtswagger.DTO.Users.UserLoginDTO;
 import com.apis.apisjwtswagger.Entity.UsersEntity;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,6 +29,7 @@ public class UserMapper {
         return modelMapper.map(users, UserListDTO.class);
     }
 
+    public UsersEntity toUsersEntity(UserLoginDTO users){return modelMapper.map(users,UsersEntity.class);}
 
 
 

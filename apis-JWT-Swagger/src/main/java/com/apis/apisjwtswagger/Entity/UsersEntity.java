@@ -23,6 +23,7 @@ public class UsersEntity implements UserDetails {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique=true)
     @NotEmpty
     @NotNull
     private String email;

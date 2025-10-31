@@ -35,13 +35,11 @@ public class SecurityConfig {
 
                         // Rutas PÚBLICAS - cualquiera puede acceder sin token
                         .requestMatchers("/apis/auth/**").permitAll()
-
                         // Rutas PROTEGIDAS - necesitas token válido
                         .requestMatchers(HttpMethod.GET,"/apis/users/").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST,"/apis/users/").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
                 // STATELESS = no guardamos sesión en servidor, todo va en el JWT
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
